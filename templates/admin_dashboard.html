@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <nav class="topnav">
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="admin_dashboard.html">Dashboard</a></li>
+            <li><a href="index.html">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="main-section">
+        <div class="greeting">
+            <h1>Welcome, Admin</h1>
+        </div>
+        <div class="categories">
+            <div class="category">
+                <h3>Number of Registered Students</h3>
+                <p id="registered-students">Loading...</p>
+            </div>
+            <div class="category">
+                <h3>Number of Attended Students</h3>
+                <p id="attended-students">Loading...</p>
+            </div>
+            <div class="category">
+                <h3>Send a File</h3>
+                <form id="send-file-form" enctype="multipart/form-data">
+                    <input type="file" id="file" name="file" required>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+            <div class="category">
+                <h3>Message a Student</h3>
+                <form id="message-form">
+                    <input type="email" id="student-email" name="student-email" placeholder="Student Email" required>
+                    <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>

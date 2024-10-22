@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo">
+        </div>
+        <form id="login-form">
+            <h2>Login</h2>
+            <input type="text" id="username" name="username" placeholder="Username" >
+            <input type="password" id="password" name="password" placeholder="Password" >
+            <p>Choose Student/Admin</p>
+            <select name="user-type" id="user-type" required>
+            <option value="student">Student</option>
+            <option value="admin">Admin</option>
+        </select>
+            <button type="submit" value="submit">Login</button>
+            <p><a href="signup.html">Sign Up</a> |
+                 <a href="forgot_password.html">Forgot Password?</a></p>
+        </form>
+
+    </div>
+    <div id="footer">
+        <p>Project by: Sboniso Ngwenya under UMP</p>
+        <p>Powered by: Python, Flask, OpenCV, Firebase</p>
+    </div>
+    <script src="/static/js/scripts.js"></script>
+    <div id="loginError"></div>
+</body>
+</html>

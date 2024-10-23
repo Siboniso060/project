@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os, base64
+import calendar
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Initialize Flask App
@@ -16,6 +17,8 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+
+
 
 # Flask-Login manager
 @login_manager.user_loader
@@ -128,6 +131,7 @@ def student_dashboard():
 def admin_dashboard():
     if current_user.user_type == 'admin':
         # Fetch admin-specific data here
+        
         return render_template('admin_dashboard.html', user=current_user)
     return redirect(url_for('index.html'))
 
@@ -137,9 +141,7 @@ def logout():
     logout_user()
     return redirect(url_for('index.html'))
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

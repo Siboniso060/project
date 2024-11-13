@@ -62,7 +62,7 @@ def login():
                 return redirect(url_for('admin_dashboard.html'))
             return redirect(url_for('student_dashboard.html'))
         flash('Invalid credentials.')
-        return redirect(url_for('index.html'))
+        return redirect(url_for('index'))
     return render_template('index.html')
 
 
@@ -82,7 +82,7 @@ def signup():
         user = User.query.filter_by(email=email).first()
         if user:
             flash('Email address already exists')
-            return redirect('signup.html')
+            return redirect(url_for('signup.html'))
 
         # Save captured image if student and facial recognition data is provided
         face_image_path = request.files.get('face_image')
@@ -104,7 +104,7 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
         flash('Account created! Please log in.')
-        return redirect(url_for('index.html'))
+        return redirect(url_for('index'))
     return render_template('signup.html')
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -124,7 +124,7 @@ def forgot_password():
 def student_dashboard():
     if current_user.user_type == 'student':
         return render_template('student_dashboard.html', user=current_user)
-    return redirect('index.html')
+    return redirect(url_for('index.html'))
 
 @app.route('/admin_dashboard')
 @login_required
@@ -133,17 +133,17 @@ def admin_dashboard():
         # Fetch admin-specific data here
         
         return render_template('admin_dashboard.html', user=current_user)
-    return redirect('index.html')
+    return redirect(url_for('index.html'))
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect('index.html')
+    return redirect(url_for('index.html'))
 
 
 
 if __name__ == '__main__':
-    #app.run(debug=True)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(debug=)
+    #app.run(host='127.0.0.1', port=5000, debug=True)
 

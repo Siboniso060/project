@@ -1,6 +1,8 @@
 from app import db
+from flask_login import UserMixin
+#db.create_all()
 
-class User(db.Model):
+class User(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     surname = db.Column(db.String(50), nullable=False)
@@ -11,6 +13,7 @@ class User(db.Model):
     password = db.Column(db.String(120), nullable=False)
     user_type = db.Column(db.String(20), nullable=False)  # student, admin, etc.
     face_image_path = db.Column(db.String(255), nullable=True)  # Path to saved face image
+
 
     def __init__(self, name, surname, student_number, course, year_of_study, email, password, user_type, face_image_path):
         self.name = name

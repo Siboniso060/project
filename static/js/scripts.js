@@ -34,7 +34,8 @@ document.getElementById('login-form').addEventListener('submit',async function(e
 });
 
 document.getElementById('signup-form').addEventListener('submit',async function(event) {
-    event.preventDefault();
+    console.log('element clicked');
+    //event.preventDefault();9/11
     const formData = new FormData();
     formData.append('name', document.getElementById('name').value);
     formData.append('surname', document.getElementById('surname').value);

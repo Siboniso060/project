@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os, base64
+from config import Config
 import calendar
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -17,7 +18,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
-
 
 
 # Flask-Login manager
@@ -82,10 +82,10 @@ def signup():
         user = User.query.filter_by(email=email).first()
         if user:
             flash('Email address already exists')
-            return redirect(url_for('signup.html'))
+            return redirect('signup.html')
 
         # Save captured image if student and facial recognition data is provided
-        face_image_path = None
+        face_image_path = request.files.get('face_image')
         if 'face_image' in request.form and user_type == 'student':
             captured_image_data = request.form['face_image']
             image_data = base64.b64decode(captured_image_data.split(',')[1])
@@ -124,7 +124,7 @@ def forgot_password():
 def student_dashboard():
     if current_user.user_type == 'student':
         return render_template('student_dashboard.html', user=current_user)
-    return redirect(url_for('index.html'))
+    return redirect('index.html')
 
 @app.route('/admin_dashboard')
 @login_required
@@ -133,15 +133,17 @@ def admin_dashboard():
         # Fetch admin-specific data here
         
         return render_template('admin_dashboard.html', user=current_user)
-    return redirect(url_for('index.html'))
+    return redirect('index.html')
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index.html'))
+    return redirect('index.html')
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)
+

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
+    <header>
     <nav class="topnav">
         <div class="logo">
             <img src="/static/images/logo.png" alt="Logo">
@@ -20,28 +21,36 @@
             <li><a href="index.html">Logout</a></li>
         </ul>
     </nav>
+</header>
+<main>
     <div class="greeting">
-        <h1>Welcome, Name</h1>
+        <h2>Welcome, {{ user.name }}!</h2>
     </div>
     <div class="main-content">
         <div class="category">
             <h3>Attendance</h3>
             <p>View your attendance records.</p>
+            <div id="attendanceData"></div>
         </div>
         <div class="category">
             <h3>Timetable</h3>
             <p>Check your class schedule.</p>
+            <div id="timetableData"></div>
         </div>
         <div class="category">
             <h3>Notifications</h3>
-            <p>Read messages from lecturers and admin.</p>
+            <ul id="notificationsList"></ul>
         </div>
         <div class="category">
             <h3>Profile</h3>
-            <p>Update your personal details.</p>
+            <p>Name: {{ user.name }}</p>
+            <p>Email: {{ user.email }}</p>
+            <p>Course: {{ user.course }}</p>
+            <p>Year of Study: {{ user.year_of_study }}</p>
         </div>
     
     </div>
+</main>
     <script src="/static/js/scripts.js"></script>
 </body>
 </html>

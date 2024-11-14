@@ -1,4 +1,4 @@
-document.getElementById('login-form').addEventListener('submit',async function(event) {
+document.getElementById('/login').addEventListener('submit',async function(event) {
     event.preventDefault();
     const loginData = {
         email: document.getElementById('loginEmail').value,
@@ -33,7 +33,7 @@ document.getElementById('login-form').addEventListener('submit',async function(e
     }
 });
 
-document.getElementById('signup-form').addEventListener('submit',async function(event) {
+document.getElementById('/signup').addEventListener('submit',async function(event) {
     console.log('element clicked');
     //event.preventDefault();9/11
     const formData = new FormData();
@@ -90,13 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-document.getElementById('forgot-password-form').addEventListener('submit', async function(event) {
+document.getElementById('/forgot_password').addEventListener('submit', async function(event) {
     event.preventDefault();
     const email = document.getElementById('forgotEmail').value;
 
     // Send request to Flask backend
     try {
-        const response = await fetch('/forgot-password', {
+        const response = await fetch('/forgot_password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

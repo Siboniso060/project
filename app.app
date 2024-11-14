@@ -19,12 +19,6 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
-
-# Flask-Login manager
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
 # Models
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -41,6 +35,12 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f"<User {self.email}>"
+    
+# Flask-Login manager
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 # Routes for Signup, Login, Logout, and Dashboards
 @app.route('/')
@@ -54,13 +54,12 @@ def login():
         password = request.form['password']
         user_type = request.form['user_type']
         user = User.query.filter_by(email=email, user_type=user_type).first()
-
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
             session['user_type'] = user_type
             if user_type == 'admin':
-                return redirect(url_for('admin_dashboard.html'))
-            return redirect(url_for('student_dashboard.html'))
+                return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('student_dashboard'))
         flash('Invalid credentials.')
         return redirect(url_for('index'))
     return render_template('index.html')
@@ -117,6 +116,7 @@ def forgot_password():
             # Implement the password reset functionality here.
         else:
             flash('Email not found.')
+            return redirect(url_for('index'))
     return render_template('forgot_password.html')
 
 @app.route('/student_dashboard')
@@ -124,7 +124,7 @@ def forgot_password():
 def student_dashboard():
     if current_user.user_type == 'student':
         return render_template('student_dashboard.html', user=current_user)
-    return redirect(url_for('index.html'))
+    return redirect(url_for('index'))
 
 @app.route('/admin_dashboard')
 @login_required
@@ -133,17 +133,17 @@ def admin_dashboard():
         # Fetch admin-specific data here
         
         return render_template('admin_dashboard.html', user=current_user)
-    return redirect(url_for('index.html'))
+    return redirect(url_for('index'))
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index.html'))
+    return redirect(url_for('index'))
 
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
     #app.run(host='127.0.0.1', port=5000, debug=True)
 

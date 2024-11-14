@@ -24,16 +24,18 @@
             <div class="category">
                 <h3>Number of Registered Students</h3>
                 <p id="registered-students">Loading...</p>
+                <div id="registeredStudentsCount"></div>
             </div>
             <div class="category">
                 <h3>Number of Attended Students</h3>
                 <p id="attended-students">Loading...</p>
+                <div id="attendanceSummary"></div>
             </div>
             <div class="category">
                 <h3>Send a File</h3>
                 <form id="send-file-form" enctype="multipart/form-data">
                     <input type="file" id="file" name="file" required>
-                    <button type="submit">Send</button>
+                    <button type="button" onclick="sendMessage()">Send</button>
                 </form>
             </div>
             <div class="category">
@@ -43,6 +45,10 @@
                     <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
                     <button type="submit">Send Message</button>
                 </form>
+            </div>
+            <div class="category">
+                <h3>View Students</h3>
+                <div id="studentData"></div>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-document.getElementById('/login').addEventListener('submit',async function(event) {
+document.getElementById('loginForm').addEventListener('submit',async function(event) {
     event.preventDefault();
     const loginData = {
         email: document.getElementById('loginEmail').value,
@@ -33,9 +33,9 @@ document.getElementById('/login').addEventListener('submit',async function(event
     }
 });
 
-document.getElementById('/signup').addEventListener('submit',async function(event) {
-    console.log('element clicked');
-    //event.preventDefault();9/11
+document.getElementById('signupForm').addEventListener('signup',async function(event) {
+    //console.log('element clicked');
+    event.preventDefault();
     const formData = new FormData();
     formData.append('name', document.getElementById('name').value);
     formData.append('surname', document.getElementById('surname').value);
@@ -70,7 +70,7 @@ document.getElementById('/signup').addEventListener('submit',async function(even
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const video = document.getElementById('videoElement');
+    const video = document.getElementById('CapturePhoto');
     
     // Check if the browser supports getUserMedia API
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-document.getElementById('/forgot_password').addEventListener('submit', async function(event) {
+document.getElementById('forgotPasswordForm').addEventListener('submit', async function(event) {
     event.preventDefault();
     const email = document.getElementById('forgotEmail').value;
 
@@ -141,23 +141,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle the message form submission
-    document.getElementById('message-form').addEventListener('submit', function(event) {
+    document.getElementById('email-form').addEventListener('submit', async function(event) {
         event.preventDefault();
-
-        let email = document.getElementById('student-email').value;
-        let message = document.getElementById('message').value;
-
-        fetch('/admin_send_message', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: email, message: message })
-        })
-        .then(response => response.text())
-        .then(data => {
-            alert(data);
-        });
+        
+        const emailData = {
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
+        };
+    
+        try {
+            const response = await fetch('/send_email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(emailData)
+            });
+            
+            if (response.ok) {
+                document.getElementById('email-status').innerText = 'Email sent successfully!';
+            } else {
+                document.getElementById('email-status').innerText = 'Failed to send email.';
+            }
+        } catch (error) {
+            document.getElementById('email-status').innerText = 'Error: ' + error.message;
+        }
     });
+    
 });

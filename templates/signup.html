@@ -42,14 +42,15 @@
             <input type="email" id="email" name="email" placeholder="Email" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
             <h5>Capture your face,make it visible enough</h5>
-            <div id="my_camera"></div>
-            <button onClick="takeSnapshot()">Capture Photo</button>
-            <div id="results"></div>
+           
             <div class="video-container">
                 <video id="videoElement" width="40" height="180" autoplay></video>
-                <!--<iframe id="video" src="/video_feed"></iframe>-->
+                <iframe id="video" src="/video_feed"></iframe>
             </div>
-            <button type="submit">Sign Up</button>
+            <div id="my_camera"></div>
+            <button id="Capture Photo">Capture Photo</button>
+            <div id="results"></div>
+            <button type="signup">Sign Up</button>
             <p><a href="index.html">Login</a></p>
         </form>
 

@@ -5,19 +5,29 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os, base64
 from config import Config
+from flask_mail import Mail, Message
 import calendar
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
 # Initialize Flask App
 app = Flask(__name__)
 app.config.from_object('config.Config')
-
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'your-email@gmail.com'
+app.config['MAIL_PASSWORD'] = 'your-email-password'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 
 # Initialize Database, Bcrypt for hashing, and Flask-Login for authentication
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+mail = Mail(app)
+
+os.makedirs(os.path.join('staticP', 'uploads'), exist_ok=True)
 
 # Models
 class User(UserMixin, db.Model):
@@ -61,7 +71,7 @@ def login():
                 return redirect(url_for('admin_dashboard'))
             return redirect(url_for('student_dashboard'))
         flash('Invalid credentials.')
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
     return render_template('index.html')
 
 
@@ -81,18 +91,16 @@ def signup():
         user = User.query.filter_by(email=email).first()
         if user:
             flash('Email address already exists')
-            return redirect(url_for('signup.html'))
+            return redirect(url_for('signup'))
 
         # Save captured image if student and facial recognition data is provided
-        face_image_path = request.files.get('face_image')
-        if 'face_image' in request.form and user_type == 'student':
-            captured_image_data = request.form['face_image']
-            image_data = base64.b64decode(captured_image_data.split(',')[1])
-            image_filename = f"{student_number}_face.png"
-            image_path = os.path.join('staticP/uploads', image_filename)
-            with open(image_path, 'wb') as f:
-                f.write(image_data)
-            face_image_path = image_filename
+        face_image = request.files.get('face_image')
+        face_image_path = None
+        if face_image and user_type == 'student':
+            filename = secure_filename(f"{student_number}_face.png")
+            image_path = os.path.join('staticP/uploads', filename)
+            face_image.save(image_path)
+            face_image_path = filename
 
         # Create new user
         new_user = User(
@@ -135,10 +143,28 @@ def admin_dashboard():
         return render_template('admin_dashboard.html', user=current_user)
     return redirect(url_for('index'))
 
+@app.route('/send_email', methods=['POST'])
+@login_required
+def send_email():
+    if current_user.user_type == 'lecturer':
+        data = request.get_json()
+        recipient_email = data.get('email')
+        message_content = data.get('message')
+        
+        msg = Message('Message from Lecturer', 
+                      sender='your-email@gmail.com', 
+                      recipients=[recipient_email])
+        msg.body = message_content
+        mail.send(msg)
+        
+        return 'Email sent!', 200
+    return 'Unauthorized', 403
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
+    session.pop('user_type', None)
     return redirect(url_for('index'))
 
 

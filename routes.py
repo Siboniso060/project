@@ -26,7 +26,7 @@ def signup():
         face_image_path = None
 
         if face_image:
-            face_image_path = os.path.join(app.config['UPLOAD_FOLDER'], face_image.filename) # type: ignore
+            face_image_path = os.path.join(app.config['staticP/uploads'], face_image.filename)  # type: ignore
             face_image.save(face_image_path)
 
         # Hash the password before storing
@@ -43,6 +43,6 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('login.html'))
+        return redirect(url_for('login'))
 
     return render_template('signup.html')

@@ -71,7 +71,7 @@ def login():
                 return redirect(url_for('admin_dashboard'))
             return redirect(url_for('student_dashboard'))
         flash('Invalid credentials.')
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
     return render_template('index.html')
 
 

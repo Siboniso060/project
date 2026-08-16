@@ -69,26 +69,70 @@ document.getElementById('signupForm').addEventListener('signup',async function(e
     }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const video = document.getElementById('CapturePhoto');
-    
-    // Check if the browser supports getUserMedia API
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        // Request access to the user's webcam
+document.addEventListener('DOMContentLoaded', function() {
+    const userTypeSelect = document.getElementById('user-type');
+    const webcamContainer = document.getElementById('webcam-container');
+    const webcam = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('capture-btn');
+    const capturedImageInput = document.getElementById('captured_image');
+    const form = document.querySelector('form');
+
+    // Show or hide the webcam capture based on user type selection
+    userTypeSelect.addEventListener('change', function() {
+        if (this.value === 'student') {
+            webcamContainer.style.display = 'block';
+            startWebcam();
+        } else {
+            webcamContainer.style.display = 'none';
+            stopWebcam();
+        }
+    });
+
+    // Start webcam stream for facial recognition capture
+    function startWebcam() {
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => {
-                // Set the video source to the webcam stream
-                video.srcObject = stream;
-                video.play();
+                webcam.srcObject = stream;
             })
             .catch(err => {
-                console.log("An error occurred: " + err);
-                alert("Webcam access is needed to capture your face.");
+                console.error("Error accessing webcam: " + err);
             });
-    } else {
-        alert("getUserMedia not supported by your browser.");
     }
+
+    // Stop webcam when no longer needed
+    function stopWebcam() {
+        const stream = webcam.srcObject;
+        if (stream) {
+            const tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+        }
+        webcam.srcObject = null;
+    }
+
+    // Capture the image from the webcam and store it in the hidden input field
+    captureBtn.addEventListener('CapturePhoto', function() {
+        canvas.width = webcam.videoWidth;
+        canvas.height = webcam.videoHeight;
+        canvas.getContext('2d').drawImage(webcam, 0, 0);
+        const imageData = canvas.toDataURL('image/png');
+        capturedImageInput.value = imageData;
+        alert('Face captured successfully!');
+    });
+
+    // Basic form validation
+    form.addEventListener('submit', function(event) {
+        const name = document.querySelector('input[name="name"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+        const password = document.querySelector('input[name="password"]').value;
+
+        if (!name || !email || !password) {
+            event.preventDefault();
+            alert('Please fill in all the required fields.');
+        }
+    });
 });
+
 
 document.getElementById('forgotPasswordForm').addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -169,3 +213,100 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
 });
+// index1
+function switchForm(className, e) {
+	e.preventDefault();
+	const allForm = document.querySelectorAll('form');
+	const form = document.querySelector(`form.${className}`);
+
+	allForm.forEach(item=> {
+		item.classList.remove('active');
+	})
+	form.classList.add('active');
+}
+
+
+const registerPassword = document.querySelector('form.register #password');
+const registerConfirmPassword = document.querySelector('form.register #confirm-pass');
+
+registerPassword.addEventListener('input', function () {
+	registerConfirmPassword.pattern = `${this.value}`;
+})
+
+//AdminNew
+const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
+
+allSideMenu.forEach(item=> {
+	const li = item.parentElement;
+
+	item.addEventListener('click', function () {
+		allSideMenu.forEach(i=> {
+			i.parentElement.classList.remove('active');
+		})
+		li.classList.add('active');
+	})
+});
+
+
+
+
+// TOGGLE SIDEBAR
+const menuBar = document.querySelector('#content nav .bx.bx-menu');
+const sidebar = document.getElementById('sidebar');
+
+menuBar.addEventListener('click', function () {
+	sidebar.classList.toggle('hide');
+})
+
+
+
+
+
+
+
+const searchButton = document.querySelector('#content nav form .form-input button');
+const searchButtonIcon = document.querySelector('#content nav form .form-input button .bx');
+const searchForm = document.querySelector('#content nav form');
+
+searchButton.addEventListener('click', function (e) {
+	if(window.innerWidth < 576) {
+		e.preventDefault();
+		searchForm.classList.toggle('show');
+		if(searchForm.classList.contains('show')) {
+			searchButtonIcon.classList.replace('bx-search', 'bx-x');
+		} else {
+			searchButtonIcon.classList.replace('bx-x', 'bx-search');
+		}
+	}
+})
+
+
+
+
+
+if(window.innerWidth < 768) {
+	sidebar.classList.add('hide');
+} else if(window.innerWidth > 576) {
+	searchButtonIcon.classList.replace('bx-x', 'bx-search');
+	searchForm.classList.remove('show');
+}
+
+
+window.addEventListener('resize', function () {
+	if(this.innerWidth > 576) {
+		searchButtonIcon.classList.replace('bx-x', 'bx-search');
+		searchForm.classList.remove('show');
+	}
+})
+
+
+
+const switchMode = document.getElementById('switch-mode');
+
+switchMode.addEventListener('change', function () {
+	if(this.checked) {
+		document.body.classList.add('dark');
+	} else {
+		document.body.classList.remove('dark');
+	}
+})

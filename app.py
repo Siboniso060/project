@@ -13,18 +13,13 @@ from werkzeug.utils import secure_filename
 # Initialize Flask App
 app = Flask(__name__)
 app.config.from_object('config.Config')
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'your-email@gmail.com'
-app.config['MAIL_PASSWORD'] = 'your-email-password'
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
 
 # Initialize Database, Bcrypt for hashing, and Flask-Login for authentication
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+login_manager.init_app(app)
 mail = Mail(app)
 
 os.makedirs(os.path.join('staticP', 'uploads'), exist_ok=True)
@@ -44,7 +39,7 @@ class User(UserMixin, db.Model):
     face_image_path = db.Column(db.String(255), nullable=True)  # Optional face image
 
     def __repr__(self):
-        return f"<User {self.email}>"
+        return self.email
     
 # Flask-Login manager
 @login_manager.user_loader
@@ -55,7 +50,7 @@ def load_user(user_id):
 # Routes for Signup, Login, Logout, and Dashboards
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template("index.html")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -78,7 +73,7 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        name = request.form['name']
+        name = request.form.get('name')
         surname = request.form['surname']
         student_number = request.form['student_number']
         course = request.form['course']
@@ -86,7 +81,7 @@ def signup():
         email = request.form['email']
         password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
         user_type = request.form['user_type']
-        captured_image_data = request.form.get('captured_image')
+        face_image = request.form.get('captured_image')
 
         user = User.query.filter_by(email=email).first()
         if user:
@@ -98,7 +93,7 @@ def signup():
         face_image_path = None
         if face_image and user_type == 'student':
             filename = secure_filename(f"{student_number}_face.png")
-            image_path = os.path.join('staticP/uploads', filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             face_image.save(image_path)
             face_image_path = filename
 
@@ -167,9 +162,12 @@ def logout():
     session.pop('user_type', None)
     return redirect(url_for('index'))
 
-
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 if __name__ == '__main__':
     app.run(debug=True)
     #app.run(host='127.0.0.1', port=5000, debug=True)
+
 
